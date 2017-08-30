@@ -9,7 +9,6 @@
 // @run-at       document-start
 // @grant        GM_notification
 // @grant        GM_info
-// @grant        window.focus
 // @grant        unsafeWindow
 // @license      Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
 // ==/UserScript==
