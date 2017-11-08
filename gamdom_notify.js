@@ -1,19 +1,21 @@
 // ==UserScript==
 // @name         Gamdom Notify
 // @description  Rain Notifications
-// @version      2.2.1
+// @version      2.2.5.3
 // @author       Pytness
 // @match        *://gamdom.com/*
-// @namespace    https://greasyfork.org/en/scripts/30087-gamdom-notify
-// @update       https://greasyfork.org/scripts/30087-gamdom-notify/code/Gamdom%20Utils.user.js
+// @namespace    https://greasyfork.org/es/scripts/32283-gamdom-notify
+// @update       https://greasyfork.org/es/scripts/32283-gamdom-notify/Gamdom%20Utils.user.js
 // @run-at       document-start
 // @grant        GM_notification
 // @grant        GM_info
+// @grant        window.focus
 // @grant        unsafeWindow
 // @license      Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
 // ==/UserScript==
 
 (function(w) {
+
     'use strict';
 
     const RainCoinAudioData =
@@ -60,15 +62,6 @@
         CoinSound.isLoaded = true;
     };
 
-    CoinSound.onerror = (e) => alert(
-        'Gamdom Rain Notify says:\n' +
-        'There was an error while loading the audio.\n' +
-        'Please, reload the page and check for plugin updates.\n' +
-        'If the error persists, please contact me: gm.utils@gmail.com\n\n' +
-        'Error ID: ' + e.target.error.code
-    );
-
-
     const NOTIFICATION = {
         title: "Gamdom Rain Notify:",
         text: "its raining :D",
@@ -78,6 +71,8 @@
     var notificate = () => {
         if (CoinSound.isLoaded) { // Check audio is loaded and play
             CoinSound.play();
+        } else {
+            console.error('COIN SOUND NOT LOADED');
         }
 
         GM_notification(NOTIFICATION);
@@ -94,7 +89,9 @@
 
         try {
             dataArray = JSON.parse(joinedData);
-        } catch(e) {return [0, 0];}
+        } catch (e) {
+            return [0, 0];
+        }
 
         return dataArray;
     };
@@ -112,14 +109,12 @@
         ], 40));
 
 
-        /* WebSocket = null; // admin, just kidding LOL */
-
         WebSocket.prototype._send = WebSocket.prototype.send;
         WebSocket.prototype.send = function(message) {
 
             this._send(message);
 
-            this.addEventListener('message', function (e) {
+            this.addEventListener('message', function(e) {
                 var dataArray = extractData(e.data);
                 if (dataArray[0] == 'activateRain' && typeof(dataArray[1]) == 'number') {
                     notificate();
@@ -128,13 +123,14 @@
 
             cinf('[i] Added onmessage event to WebSocket');
 
-    		WebSocket.prototype.send = WebSocket.prototype._send;
-    		WebSocket.prototype._send = undefined;
+            WebSocket.prototype.send = WebSocket.prototype._send;
+            WebSocket.prototype._send = undefined;
             cinf('[i] WebSocket.send given back');
 
             cinf('[+] Script Started');
         };
         cinf('[i] WebSocket.send borrowed');
+
     };
 
     init();
