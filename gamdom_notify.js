@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gamdom Notify
 // @description  Rain Notifications
-// @version      2.2.5.3
+// @version      2.2.6.1
 // @author       Pytness
 // @match        *://gamdom.com/*
 // @namespace    https://greasyfork.org/es/scripts/32283-gamdom-notify
@@ -9,7 +9,6 @@
 // @run-at       document-start
 // @grant        GM_notification
 // @grant        GM_info
-// @grant        window.focus
 // @grant        unsafeWindow
 // @license      Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
 // ==/UserScript==
@@ -24,114 +23,93 @@
     ///////////////////////////////////////////////////////////////////////////
 
     var box = (lines, l) => {
-        l = Math.abs(l);
 
         for (let i = 0; i < lines.length; i++) {
             let a = (lines[i] = lines[i].trimRight()).length;
             l = a > l ? a : l;
         }
 
-        var header = '+' + '='.repeat(l) + '+';
+        var header = '+'.padEnd(l+1, '=') + '+';
         var output = '';
 
-        output += header + '\n';
         for (let i = 0; i < lines.length; i++) {
             let a = lines[i].length;
-            output += '|' + lines[i] + ' '.repeat(l - a) + '|\n';
+            output += '|' + lines[i].padEnd(l - a + 1, ' ') + '|\n';
         }
 
-        output += header;
-        return output;
-
+        return header + '\n' + output + header;
+        
     };
 
-    var cinf = (...a) => console.info(...a);
-    var cerr = (...a) => console.error(...a);
-    var clog = (...a) => console.log(...a);
+    var log = console.log;
+    var err = console.error;
 
     ///////////////////////////////////////////////////////////////////////////
 
-    const MEDIA = {
-        audio: RainCoinAudioData,
-    };
-
-    var CoinSound = new Audio(MEDIA.audio); // Load Audio
+    var CoinSound = new Audio(RainCoinAudioData); // Load Audio
     CoinSound.isLoaded = false;
 
     CoinSound.oncanplay = () => {
         CoinSound.isLoaded = true;
     };
 
-    const NOTIFICATION = {
-        title: "Gamdom Rain Notify:",
-        text: "its raining :D",
-        timeout: 5000
-    };
-
     var notificate = () => {
-        if (CoinSound.isLoaded) { // Check audio is loaded and play
-            CoinSound.play();
-        } else {
-            console.error('COIN SOUND NOT LOADED');
-        }
 
-        GM_notification(NOTIFICATION);
+        CoinSound.isLoaded ? CoinSound.play() :
+            err('COIN SOUND NOT LOADED');
+
+        GM_notification({
+            title: "Gamdom Rain Notify:",
+            text: "its raining :D",
+            timeout: 5000
+        });
     };
 
     ///////////////////////////////////////////////////////////////////////////
 
 
-    var extractData = (data) => {
+    var extractData = (a, b=false) => {
+		try {
+			b = JSON.parse(a.split(',').slice(1).join(','));
+		} finally {return b;}
+	};
 
-        var dataArray, splitedData = data.split(',');
-        splitedData.shift();
-        var joinedData = splitedData.join(',');
-
-        try {
-            dataArray = JSON.parse(joinedData);
-        } catch (e) {
-            return [0, 0];
-        }
-
-        return dataArray;
-    };
+	var manageMessages = (a) => {
+		var b = extractData(a.data);
+		if (b[0] == 'activateRain' && typeof b[1] == 'number') notificate();
+	};
 
     ///////////////////////////////////////////////////////////////////////////
 
     var init = () => {
-
-        var initTime = Date.now();
-
-        cinf(box([
+        log(box([
             ' Gamdom Rain Notify:', '',
             ' Ver: ' + GM_info.script.version,
             ' By ' + GM_info.script.author, '',
         ], 40));
 
+        var _WS = WebSocket;
 
-        WebSocket.prototype._send = WebSocket.prototype.send;
-        WebSocket.prototype.send = function(message) {
+        w.WebSocket = function(...args) {
 
-            this._send(message);
+            log('[i] New WebSocket connection');
 
-            this.addEventListener('message', function(e) {
-                var dataArray = extractData(e.data);
-                if (dataArray[0] == 'activateRain' && typeof(dataArray[1]) == 'number') {
-                    notificate();
-                }
-            }, false);
+            var tws = new _WS(...args);
+            tws.addEventListener('message', manageMessages, false);
+            log('[i] Added onmessage event to WebSocket');
 
-            cinf('[i] Added onmessage event to WebSocket');
-
-            WebSocket.prototype.send = WebSocket.prototype._send;
-            WebSocket.prototype._send = undefined;
-            cinf('[i] WebSocket.send given back');
-
-            cinf('[+] Script Started');
+            return tws;
         };
-        cinf('[i] WebSocket.send borrowed');
 
+        WebSocket.__defineGetter__('toString', () => function() {
+            return 'function eval() {\n\t[native code]\n}';
+        });
+
+        log('[i] WebSocket hijacked');
+
+        log('[i] Script executed');
     };
 
     init();
-}(window));
+
+}(unsafeWindow));
