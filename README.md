@@ -1,8 +1,8 @@
 # Gamdom-Notify
 Tampermonkey script
 
-This script will notify you with a coin sound and a slide notification
-This script will NOT cover your coins or whatever
+This script will notify you with a coin sound and a slide notification.
+This script will NOT cover your coins or whatever.
 
 You can get banned if you do rain abuse (get coins and dont bet).
 This script is illegal in gamdom.com (read https://gamdom.com/faq), so don't talk about it.
