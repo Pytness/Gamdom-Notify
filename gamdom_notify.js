@@ -34,11 +34,11 @@
 
         for (let i = 0; i < lines.length; i++) {
             let a = lines[i].length;
-            output += '|' + lines[i].padEnd(l - a + 1, ' ') + '|\n';
+            output += '|' + lines[i].padEnd(l + 1, ' ') + '|\n';
         }
 
         return header + '\n' + output + header;
-        
+
     };
 
     var log = console.log;
