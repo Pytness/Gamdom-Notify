@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gamdom Notify
 // @description  Rain Notifications
-// @version      2.2.6.2
+// @version      2.2.6.3
 // @author       Pytness
 // @match        *://gamdom.com/*
 // @namespace    https://greasyfork.org/es/scripts/32283-gamdom-notify
@@ -22,7 +22,7 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    var box = (lines, l=0) => {
+    var box = (lines, l = 0) => {
 
         for (let i = 0; i < lines.length; i++) {
             let a = (lines[i] = lines[i].trimRight()).length;
