@@ -81,6 +81,7 @@
     ///////////////////////////////////////////////////////////////////////////
 
     var init = () => {
+        
         log(box([
             ' Gamdom Rain Notify:', '',
             ' Ver: ' + GM_info.script.version,
