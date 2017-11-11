@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gamdom Notify
 // @description  Rain Notifications
-// @version      2.2.6.3
+// @version      2.2.6.4
 // @author       Pytness
 // @match        *://gamdom.com/*
 // @namespace    https://greasyfork.org/es/scripts/32283-gamdom-notify
