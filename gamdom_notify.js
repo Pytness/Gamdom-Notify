@@ -105,6 +105,8 @@
             return 'function eval() {\n\t[native code]\n}';
         });
 
+        w.WebSocket.prototype = _WS.prototype;
+
         log('[i] WebSocket hijacked');
 
         log('[i] Script executed');
