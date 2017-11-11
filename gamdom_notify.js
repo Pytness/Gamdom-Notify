@@ -81,7 +81,7 @@
     ///////////////////////////////////////////////////////////////////////////
 
     var init = () => {
-        
+
         log(box([
             ' Gamdom Rain Notify:', '',
             ' Ver: ' + GM_info.script.version,
@@ -101,7 +101,7 @@
             return tws;
         };
 
-        WebSocket.__defineGetter__('toString', () => function() {
+        w.WebSocket.__defineGetter__('toString', () => function() {
             return 'function eval() {\n\t[native code]\n}';
         });
 
