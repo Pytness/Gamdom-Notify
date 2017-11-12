@@ -108,10 +108,9 @@
         w.WebSocket.prototype = _WS.prototype;
 
         log('[i] WebSocket hijacked');
-
-        log('[i] Script executed');
     };
 
     init();
+    log('[i] Script executed');
 
 }(unsafeWindow));
