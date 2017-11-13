@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gamdom Notify
 // @description  Rain Notifications
-// @version      2.2.6.4
+// @version      2.2.6.5
 // @author       Pytness
 // @match        *://gamdom.com/*
 // @namespace    https://greasyfork.org/es/scripts/32283-gamdom-notify
@@ -38,7 +38,6 @@
         }
 
         return header + '\n' + output + header;
-
     };
 
     var log = console.log;
@@ -55,8 +54,8 @@
 
     var notificate = () => {
 
-        CoinSound.isLoaded ? CoinSound.play() :
-            err('COIN SOUND NOT LOADED');
+        CoinSound.isLoaded ?
+            CoinSound.play() : err('COIN SOUND NOT LOADED');
 
         GM_notification({
             title: "Gamdom Rain Notify:",
@@ -102,7 +101,7 @@
         };
 
         w.WebSocket.__defineGetter__('toString', () => function() {
-            return 'function eval() {\n    [native code]\n}';
+            return 'function WebSocket() {\n    [native code]\n}';
         });
 
         w.WebSocket.prototype = _WS.prototype;
