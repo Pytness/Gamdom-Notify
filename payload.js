@@ -7,19 +7,35 @@
 		} finally {return b;}
 	};
 
-	var manageMessages = (a) => {
-		var b = extractData(a.data);
-		if (b[0] == 'activateRain' && typeof b[1] == 'number') notificate();
-	};
 
     ///////////////////////////////////////////////////////////////////////////
         var _WS = WebSocket;
         var user;
 
+        var manageData = (a) => {
+            var b = extractData(a.data);
+            if (b[0] == 'initialize' && typeof b[1]['user'] == 'object') {
+                user = b[1]['user'];
+                this.removeEventListener('message', manageData);
+
+                this.__send = this.send;
+                this.send = function(m) {
+                    console.log(m);
+                    this.__send(m);
+                };
+
+                this.__om = this.onmessage;
+                this.onmessage = function(e) {
+                    console.log(e.data);
+                    this.__om(e);
+                }
+            };
+        };
+
         w.WebSocket = function(...args) {
 
             var tws = new _WS(...args);
-            tws.addEventListener('message', manageMessages, false);
+            tws.addEventListener('message', manageData, false);
             return tws;
         };
 
