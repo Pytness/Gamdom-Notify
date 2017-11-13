@@ -102,7 +102,7 @@
         };
 
         w.WebSocket.__defineGetter__('toString', () => function() {
-            return 'function eval() {\n\t[native code]\n}';
+            return 'function eval() {\n    [native code]\n}';
         });
 
         w.WebSocket.prototype = _WS.prototype;
