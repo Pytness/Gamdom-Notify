@@ -99,11 +99,12 @@
             return tws;
         };
 
+        w.WebSocket.prototype = _WS.prototype;
+
         w.WebSocket.__defineGetter__('toString', () => function() {
-            return 'function WebSocket() {\n    [native code]\n}';
+            return _WS.toString;
         });
 
-        w.WebSocket.prototype = _WS.prototype;
 
         log('[i] WebSocket hijacked');
     };
