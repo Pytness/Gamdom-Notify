@@ -33,7 +33,6 @@
         var output = '';
 
         for (let i = 0; i < lines.length; i++) {
-            let a = lines[i].length;
             output += '|' + lines[i].padEnd(l + 1, ' ') + '|\n';
         }
 
