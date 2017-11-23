@@ -22,21 +22,15 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    var box = (lines, l = 0) => {
-
-        for (let i = 0; i < lines.length; i++) {
-            let a = (lines[i] = lines[i].trimRight()).length;
-            l = a > l ? a : l;
-        }
-
-        var header = '+'.padEnd(l+1, '=') + '+';
-        var output = '';
-
-        for (let i = 0; i < lines.length; i++) {
-            output += '|' + lines[i].padEnd(l + 1, ' ') + '|\n';
-        }
-
-        return header + '\n' + output + header;
+    var box = (a, b = 0) => {
+        var c = '';
+        a.forEach(e => {
+            b = e.length > b ? e.length : b
+        });
+        var d = '+'.padEnd(b + 1 - 2, '=') + '+';
+        return a.forEach(e => {
+            c += '|' + e.padEnd(b + 1, ' ') + '|\n'
+        }), d + '\n' + c + d
     };
 
     var log = console.log;
