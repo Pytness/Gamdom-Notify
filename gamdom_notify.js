@@ -95,7 +95,7 @@
         w.WebSocket.prototype = _WS.prototype;
 
         w.WebSocket.__defineGetter__('toString', () => function() {
-            return _WS.toString;
+            return "function WebSocket() {\n    [native code]\n}";
         });
 
 
