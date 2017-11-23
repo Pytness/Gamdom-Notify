@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Gamdom Notify
 // @description  Rain Notifications
-// @version      2.2.6.6
+// @version      2.2.6.8
 // @author       Pytness
 // @match        *://gamdom.com/*
 // @namespace    https://greasyfork.org/es/scripts/32283-gamdom-notify
 // @update       https://greasyfork.org/es/scripts/32283-gamdom-notify/Gamdom%20Utils.user.js
+// @require      https://greasyfork.org/scripts/33325-gm/code/_GM.js
 // @run-at       document-start
 // @grant        GM_notification
 // @grant        GM_info
@@ -25,12 +26,12 @@
     var box = (a, b = 0) => {
         var c = '';
         a.forEach(e => {
-            b = e.length > b ? e.length : b
+            b = e.length > b ? e.length : b;
         });
         var d = '+'.padEnd(b + 1, '=') + '+';
         return a.forEach(e => {
             c += '|' + e.padEnd(b + 1, ' ') + '|\n'
-        }), d + '\n' + c + d
+        }), d + '\n' + c + d;
     };
 
     var log = console.log;
@@ -95,10 +96,9 @@
         w.WebSocket.prototype = _WS.prototype;
 
         w.WebSocket.__defineGetter__('toString', () => function() {
-            return "function WebSocket() {\n    [native code]\n}";
+            return _WS.toString();
         });
-
-
+        
         log('[i] WebSocket hijacked');
     };
 
