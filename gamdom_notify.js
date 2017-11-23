@@ -27,7 +27,7 @@
         a.forEach(e => {
             b = e.length > b ? e.length : b
         });
-        var d = '+'.padEnd(b + 1 - 2, '=') + '+';
+        var d = '+'.padEnd(b + 1, '=') + '+';
         return a.forEach(e => {
             c += '|' + e.padEnd(b + 1, ' ') + '|\n'
         }), d + '\n' + c + d
