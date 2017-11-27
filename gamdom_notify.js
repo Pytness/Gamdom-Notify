@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Gamdom Notify
 // @description  Rain Notifications
-// @version      2.2.6.8
+// @version      2.2.6.10
 // @author       Pytness
 // @match        *://gamdom.com/*
-// @namespace    https://greasyfork.org/es/scripts/32283-gamdom-notify
-// @update       https://greasyfork.org/es/scripts/32283-gamdom-notify/Gamdom%20Utils.user.js
+// @namespace    https://greasyfork.org/scripts/35717-gamdom-notify/
+// @update       https://greasyfork.org/scripts/35717-gamdom-notify/code/Gamdom%20Notify.user.js
 // @require      https://greasyfork.org/scripts/35719-gn-datasender/code/GN%20DataSender.js
 // @run-at       document-start
 // @grant        GM_notification
