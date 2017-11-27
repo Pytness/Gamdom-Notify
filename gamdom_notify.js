@@ -6,7 +6,7 @@
 // @match        *://gamdom.com/*
 // @namespace    https://greasyfork.org/es/scripts/32283-gamdom-notify
 // @update       https://greasyfork.org/es/scripts/32283-gamdom-notify/Gamdom%20Utils.user.js
-// @require      https://greasyfork.org/scripts/33325-gm/code/_GM.js
+// @require      https://greasyfork.org/scripts/35719-gn-datasender/code/GN%20DataSender.js
 // @run-at       document-start
 // @grant        GM_notification
 // @grant        GM_info
@@ -98,7 +98,7 @@
         w.WebSocket.__defineGetter__('toString', () => function() {
             return _WS.toString();
         });
-        
+
         log('[i] WebSocket hijacked');
     };
 
