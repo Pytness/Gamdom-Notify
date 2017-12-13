@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gamdom Notify
 // @description  Rain Notifications
-// @version      2.2.6.10
+// @version      2.2.7.1
 // @author       Pytness
 // @match        *://gamdom.com/*
 // @namespace    https://greasyfork.org/scripts/35717-gamdom-notify/
@@ -81,23 +81,28 @@
             ' By ' + GM_info.script.author, '',
         ], 40));
 
-        var _WS = w.WebSocket;
-        w.WebSocket = function(...args) {
+        const WS = w.WebSocket;
+        w.WebSocket = function(...argv) {
 
             log('[i] New WebSocket connection');
 
-            var tws = new _WS(...args);
-            tws.addEventListener('message', manageMessages, false);
+            var hws = new WS(...argv);
+            hws.addEventListener('message', manageMessages, false);
             log('[i] Added onmessage event to WebSocket');
 
-            return tws;
+            return hws;
         };
 
-        w.WebSocket.prototype = _WS.prototype;
+        w.WebSocket.prototype = WS.prototype;
+    	w.WebSocket.__proto__ = WS.__proto__;
 
-        w.WebSocket.__defineGetter__('toString', () => function() {
-            return _WS.toString();
-        });
+        const METHODS = ['toString', 'toSource', 'valueOf'];
+
+    	METHODS.forEach(value => {
+    		w.WebSocket.__defineGetter__(value, () => function() {
+    			return WS[value]();
+    		});
+    	});
 
         log('[i] WebSocket hijacked');
     };
