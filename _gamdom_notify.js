@@ -6,7 +6,7 @@
 // @match          *://gamdom.com/*
 // @namespace      https://greasyfork.org/scripts/35717-gamdom-notify/
 // @update         https://greasyfork.org/scripts/35717-gamdom-notify/code/Gamdom%20Notify.user.js
-// @resource       RainCoinAudioData https://raw.githubusercontent.com/Pytness/Gamdom-Notify/master/CoinSound.mp3
+// @resource       CoinAudioData https://raw.githubusercontent.com/Pytness/Gamdom-Notify/master/CoinSound.mp3
 // @run-at         document-start
 // @grant          GM_info
 // @grant          GM_notification
@@ -20,30 +20,29 @@
 	'use strict';
 
 	const HijackConsole = false;
-	const DEBUG = false;
+	const DEBUG = 0;
 
-	let hws = null; // NOTE: this variable will contain the Hijacked WebSocket
-
+	// NOTE: Creates a ascii box
 	const box = (a, b = 0) => {
 		let d, c = '';
 		a.forEach(e => b = e.length > b ? e.length : b);
 		d = '+'.padEnd(b, '=') + '+';
-		return a.forEach(e => {
-			c += '|' + e.padEnd(b, ' ') + '|\n';
-		}), d + '\n' + c + d;
+		a.forEach(e => c += '|' + e.padEnd(b - 1, ' ') + '|\n');
+		return d + '\n' + c + d;
 	};
 
-	const box = (f, g = 0) => {
-		let h, i = '';
-		return f.forEach(j => g = j.length > g ? j.length : g),
-			h = '+'.padEnd(g, '=') + '+',
-			(f.forEach(j => {
-				i += '|' + j.padEnd(g, ' ') + '|\n'
-			}), h + '\n' + i + h)
+	// NOTE: Simple colored console logs
+	const clog = (a, b = "") => {
+		let c = "",
+			d = "";
+		"err" === b ? (c = "red", d = "[x]") :
+			"warn" === b ? (c = "darkorange", d = "[!]") :
+			"info" === b ? (c = "dodgerblue", d = "[i]") :
+			"ok" === b ? (c = "green", d = "[+]") :
+			c = "black";
+		console.log("%c" + d + " " + a, "color:" + c);
 	};
 
-	const log = console.log;
-	const err = console.error;
 
 	///////////////////////////////////////////////////////////////////////////
 
@@ -55,8 +54,8 @@
 
 	///////////////////////////////////////////////////////////////////////////
 
-	const RainCoinAudioData = GM_getResourceURL('RainCoinAudioData').replace('application', 'audio/mp3');
-	const CoinSound = new Audio(RainCoinAudioData); // Load Audio
+	const CoinAudioData = GM_getResourceURL('CoinAudioData').replace('application', 'audio/mp3');
+	const CoinSound = new Audio(CoinAudioData); // Load Audio
 	CoinSound.isLoaded = false;
 
 	CoinSound.oncanplay = () => {
@@ -80,7 +79,7 @@
 
 	const extractData = (a, b = false) => {
 		try {
-			b = JSON.parse(a.split(',').slice(1).join(','));
+			b = JSON.parse(a.split(',').slice(1).join());
 		} finally {
 			return b;
 		}
@@ -93,14 +92,14 @@
 
 	///////////////////////////////////////////////////////////////////////////
 
-	// NOTE: HijackWebsocket is imported from https://github.com/Pytness/Hijack-Websocket
+	// NOTE: HijackWebsocket is imported (and modified) from https://github.com/Pytness/Hijack-Websocket
 
 	const HijackWebsocket = () => {
+		var hws;
 		const WS = w.WebSocket;
 
 		w.WebSocket = function (...argv) {
-
-			log('[i] New WebSocket connection');
+			clog('New WebSocket connection', 'info');
 
 			hws = new WS(...argv);
 			hws.addEventListener('message', manageMessages, false);
@@ -117,19 +116,18 @@
 				return WS[value]();
 			});
 		});
+
+		if(DEBUG) w.triggerNotify = () => {
+			hws.dispatchEvent(new MessageEvent('message', {
+				data: '42/chat,["activateRain", 9879877]',
+				origin: "wss://gamdom.com",
+				lastEventId: "",
+				source: null,
+				ports: []
+			}));
+		};
 	};
 
-	// NOTE: triggerNotify will cause WebSocket socket dies
-
-	const triggerNotify = () => {
-		HWS.dispatchEvent(new MessageEvent('message', {
-			data: 'asd,["activateRain", 9879877]',
-			origin: "wss://gamdom.com",
-			lastEventId: "",
-			source: null,
-			ports: []
-		}));
-	};
 
 	///////////////////////////////////////////////////////////////////////////
 
@@ -138,12 +136,14 @@
 		log(initMessage);
 
 		HijackWebsocket();
-		log('[i] WebSocket hijacked');
+		clog('WebSocket hijacked', 'info');
 
-		if(DEBUG) w.triggerNotify = triggerNotify;
+		window.addEventListener('load', function (e) {
+			w.document.body.style.display = 'none';
+		});
 	};
 
 	init();
-	log('[i] Script executed');
+	clog('Script executed', 'ok');
 
 }(unsafeWindow));
