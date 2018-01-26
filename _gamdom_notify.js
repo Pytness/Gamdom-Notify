@@ -54,8 +54,8 @@
 
 	///////////////////////////////////////////////////////////////////////////
 
-	const CoinAudioData = GM_getResourceURL('CoinAudioData').replace('application', 'audio/mp3');
-	const CoinSound = new Audio(CoinAudioData); // Load Audio
+	const CoinAudioData = GM_getResourceURL('CoinAudioData');
+	const CoinSound = new Audio(CoinAudioData.replace('application', 'audio/mp3')); // Load Audio
 	CoinSound.isLoaded = false;
 
 	CoinSound.oncanplay = () => {
@@ -99,9 +99,9 @@
 		const WS = w.WebSocket;
 
 		w.WebSocket = function (...argv) {
-			clog('New WebSocket connection', 'info');
 
 			hws = new WS(...argv);
+			clog('New WebSocket connection', 'info');
 			hws.addEventListener('message', manageMessages, false);
 			return hws;
 		};
