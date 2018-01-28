@@ -19,8 +19,7 @@
 
 	'use strict';
 
-	const HijackConsole = false;
-	const DEBUG = 0;
+	const DEBUG = 1;
 
 	// NOTE: Creates a ascii box
 	const box = (a, b = 0) => {
@@ -32,6 +31,7 @@
 	};
 
 	// NOTE: Simple colored console logs
+	const log = w.console.log.bind();
 	const clog = (a, b = "") => {
 		let c = "",
 			d = "";
@@ -40,7 +40,8 @@
 			"info" === b ? (c = "dodgerblue", d = "[i]") :
 			"ok" === b ? (c = "forestgreen", d = "[+]") :
 			c = "black";
-		console.log("%c" + d + " " + a, "color:" + c);
+		c == "" ? log(a) :
+			log("%c" + d + " " + a, "color:" + c);
 	};
 
 
@@ -54,8 +55,10 @@
 
 	///////////////////////////////////////////////////////////////////////////
 
-	const CoinAudioData = GM_getResourceURL('CoinAudioData');
-	const CoinSound = new Audio(CoinAudioData.replace('application', 'audio/mp3')); // Load Audio
+	const CoinAudioData = GM_getResourceURL('CoinAudioData')
+		.replace('application', 'audio/mp3');
+
+	const CoinSound = new Audio(CoinAudioData); // Load Audio
 	CoinSound.isLoaded = false;
 
 	CoinSound.oncanplay = () => {
@@ -65,7 +68,7 @@
 	const notificate = () => {
 
 		CoinSound.isLoaded ?
-			CoinSound.play() : err('COIN SOUND NOT LOADED');
+			CoinSound.play() : clog('COIN SOUND NOT LOADED', 'err');
 
 		GM_notification({
 			title: "Gamdom Rain Notify:",
@@ -87,24 +90,25 @@
 
 	const manageMessages = (a) => {
 		var b = extractData(a.data);
-		if(b[0] == 'activateRain' && typeof b[1] == 'number') notificate();
+		if(b[0] == 'activateRain') notificate();
 	};
 
 	///////////////////////////////////////////////////////////////////////////
 
-	// NOTE: HijackWebsocket is imported (and modified) from https://github.com/Pytness/Hijack-Websocket
-
+	/* NOTE: HijackWebsocket is imported (and modified)
+	 *    from https://github.com/Pytness/Hijack-Websocket
+	 */
 	const HijackWebsocket = () => {
-		var hws;
+
 		const WS = w.WebSocket;
-
 		w.WebSocket = function (...argv) {
-
-			hws = new WS(...argv);
-			clog('New WebSocket connection', 'info');
-			hws.addEventListener('message', manageMessages, false);
+			let hws = new WS(...argv);
+			hws.addEventListener('message', manageMessages);
+			clog('Intercepted new WebSocket conection', 'info');
 			return hws;
 		};
+
+		clog('WebSocket constructor hijacked', 'ok');
 
 		w.WebSocket.prototype = WS.prototype;
 		w.WebSocket.__proto__ = WS.__proto__;
@@ -117,15 +121,7 @@
 			});
 		});
 
-		if(DEBUG) w.triggerNotify = () => {
-			hws.dispatchEvent(new MessageEvent('message', {
-				data: '42/chat,["activateRain", 9879877]',
-				origin: "wss://gamdom.com",
-				lastEventId: "",
-				source: null,
-				ports: []
-			}));
-		};
+		clog('Hijacked WebSocket secured', 'ok');
 	};
 
 
@@ -133,17 +129,16 @@
 
 	const init = () => {
 
-		log(initMessage);
+		// NOTE: Log on console Script info
+		clog(initMessage);
 
+		// NOTE: Hijack the WebSocket constructor
 		HijackWebsocket();
-		clog('WebSocket hijacked', 'info');
+		clog('Waiting for WebSocket creation...', 'info');
 
-		window.addEventListener('load', function (e) {
-			w.document.body.style.display = 'none';
-		});
+		//TODO: something, idk what
 	};
 
 	init();
-	clog('Script executed', 'ok');
 
 }(unsafeWindow));
