@@ -19,7 +19,7 @@
 
 	'use strict';
 
-	const DEBUG = 1;
+	const LOG = w.console.log.bind();
 
 	// NOTE: Creates a ascii box
 	const box = (a, b = 0) => {
@@ -31,7 +31,6 @@
 	};
 
 	// NOTE: Simple colored console logs
-	const log = w.console.log.bind();
 	const clog = (a, b = "") => {
 		let c = "",
 			d = "";
@@ -39,9 +38,9 @@
 			"warn" === b ? (c = "darkorange", d = "[!]") :
 			"info" === b ? (c = "dodgerblue", d = "[i]") :
 			"ok" === b ? (c = "forestgreen", d = "[+]") :
-			c = "black";
-		c == "" ? log(a) :
-			log("%c" + d + " " + a, "color:" + c);
+			void 0;
+		c == "" ? LOG(a) :
+			LOG("%c" + d + " " + a, "color:" + c);
 	};
 
 
@@ -53,29 +52,23 @@
 		' By ' + GM_info.script.author, '',
 	], 40);
 
+	const NData = { // Notification data
+		title: "Gamdom Rain Notify:",
+		text: "its raining :D",
+		highlight: true,
+		timeout: 5000
+	};
+
 	///////////////////////////////////////////////////////////////////////////
 
 	const CoinAudioData = GM_getResourceURL('CoinAudioData')
 		.replace('application', 'audio/mp3');
 
 	const CoinSound = new Audio(CoinAudioData); // Load Audio
-	CoinSound.isLoaded = false;
-
-	CoinSound.oncanplay = () => {
-		CoinSound.isLoaded = true;
-	};
 
 	const notificate = () => {
-
-		CoinSound.isLoaded ?
-			CoinSound.play() : clog('COIN SOUND NOT LOADED', 'err');
-
-		GM_notification({
-			title: "Gamdom Rain Notify:",
-			text: "its raining :D",
-			highlight: true,
-			timeout: 5000
-		});
+		CoinSound.play();
+		GM_notification(NData);
 	};
 
 	///////////////////////////////////////////////////////////////////////////
@@ -122,6 +115,7 @@
 		});
 
 		clog('Hijacked WebSocket secured', 'ok');
+		clog('Waiting for WebSocket creation...', 'info');
 	};
 
 
@@ -134,9 +128,8 @@
 
 		// NOTE: Hijack the WebSocket constructor
 		HijackWebsocket();
-		clog('Waiting for WebSocket creation...', 'info');
 
-		//TODO: something, idk what
+		//TODO: (?)
 	};
 
 	init();
