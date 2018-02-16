@@ -19,7 +19,7 @@
 
 	'use strict';
 
-	const LOG = w.console.log.bind();
+	const log = w.console.log.bind();
 
 	// NOTE: Creates a ascii box
 	const box = (a, b = 0) => {
@@ -29,20 +29,6 @@
 		a.forEach(e => c += '|' + e.padEnd(b - 1, ' ') + '|\n');
 		return d + '\n' + c + d;
 	};
-
-	// NOTE: Simple colored console logs
-	const clog = (a, b = "") => {
-		let c = "",
-			d = "";
-		"err" === b ? (c = "red", d = "[x]") :
-			"warn" === b ? (c = "darkorange", d = "[!]") :
-			"info" === b ? (c = "dodgerblue", d = "[i]") :
-			"ok" === b ? (c = "forestgreen", d = "[+]") :
-			void 0;
-		c == "" ? LOG(a) :
-			LOG("%c" + d + " " + a, "color:" + c);
-	};
-
 
 	///////////////////////////////////////////////////////////////////////////
 
@@ -91,17 +77,18 @@
 	/* NOTE: HijackWebsocket is imported (and modified)
 	 *    from https://github.com/Pytness/Hijack-Websocket
 	 */
+
 	const HijackWebsocket = () => {
 
 		const WS = w.WebSocket;
 		w.WebSocket = function (...argv) {
 			let hws = new WS(...argv);
 			hws.addEventListener('message', manageMessages);
-			clog('Intercepted new WebSocket conection', 'info');
+			log('Intercepted new WebSocket conection', 'info');
 			return hws;
 		};
 
-		clog('WebSocket constructor hijacked', 'ok');
+		log('WebSocket constructor hijacked', 'ok');
 
 		w.WebSocket.prototype = WS.prototype;
 		w.WebSocket.__proto__ = WS.__proto__;
@@ -114,22 +101,19 @@
 			});
 		});
 
-		clog('Hijacked WebSocket secured', 'ok');
-		clog('Waiting for WebSocket creation...', 'info');
+		log('Hijacked WebSocket secured', 'ok');
+		log('Waiting for WebSocket creation...', 'info');
 	};
 
 
 	///////////////////////////////////////////////////////////////////////////
 
 	const init = () => {
-
 		// NOTE: Log on console Script info
-		clog(initMessage);
+		log(initMessage);
 
 		// NOTE: Hijack the WebSocket constructor
 		HijackWebsocket();
-
-		//TODO: (?)
 	};
 
 	init();
