@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Gamdom Notify
 // @description    Rain Notifications
-// @version        2.3.0.1
+// @version        2.4
 // @author         Pytness
 // @match          *://gamdom.com/*
 // @namespace      https://greasyfork.org/scripts/35717-gamdom-notify/
@@ -93,14 +93,8 @@
 		w.WebSocket.prototype = WS.prototype;
 		w.WebSocket.__proto__ = WS.__proto__;
 
-		const METHODS = ['toString', 'toSource', 'valueOf'];
-
-		METHODS.forEach(value => {
-			w.WebSocket.__defineGetter__(value, () => function () {
-				return WS[value]();
-			});
-		});
-
+		window.WebSocket = Function.prototype.call.apply(Function.prototype.bind, [window.WebSocket]);
+		
 		log('Hijacked WebSocket secured', 'ok');
 		log('Waiting for WebSocket creation...', 'info');
 	};
