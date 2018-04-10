@@ -93,7 +93,7 @@
 		w.WebSocket.prototype = WS.prototype;
 		w.WebSocket.__proto__ = WS.__proto__;
 
-		window.WebSocket = Function.prototype.call.apply(Function.prototype.bind, [window.WebSocket]);
+		w.WebSocket = Function.prototype.call.apply(Function.prototype.bind, [w.WebSocket]);
 		
 		log('Hijacked WebSocket secured', 'ok');
 		log('Waiting for WebSocket creation...', 'info');
