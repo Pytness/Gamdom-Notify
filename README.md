@@ -1,4 +1,8 @@
 # Gamdom-Notify
+
+**This script does not work currently
+
+
 Tampermonkey Script
 
 This script will notify you with a coin sound and a slide notification.
