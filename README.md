@@ -1,6 +1,6 @@
 # Gamdom-Notify
 
-**This script does not work currently
+## This repository is no longer maintained
 
 
 Tampermonkey Script
